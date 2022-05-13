@@ -27,3 +27,23 @@ To run the extrinsic evaluation, do the following steps with the scripts in the 
 9. Run finetuning with scripts in fairseq-finetune/ and fairseq-finetune-same_epoch/ for fixed updates and fixed epochs, respectively
 
 The pretrained Fairseq models are also available [here](https://drive.google.com/drive/folders/1m9Y3Rm7-o6Uhmd690jLKdOgfVPK_9_Du?usp=sharing). These can be extracted into the models/fairseq/ directory, skipping steps 3, 5, and 6 above. 
+
+
+## Hugging Face
+A RoBERTa model trained for 500k steps, using Unigram prime no spaces with a vocab size of 32k, is available on the Hugging Face Hub:  
+
+https://huggingface.co/edwardgowsmith/roberta-base-unigram-prime   
+
+To use this model, the tokeniser class in models/huggingface-tokeniser/pre_trained_tokeniser_fast_modified.py needs to be appended to the file transformers/src/transformers/tokenization_utils_fast.py when using Transformers. This removes the spaces as a post-processing step.
+
+Then, the tokeniser file in models/huggingface-tokeniser/tokeniser-unigram-prime-32000.json can be loaded as, e.g.:
+```
+from transformers import PreTrainedTokenizerFastModified
+
+tokenizer = PreTrainedTokenizerFastModified(tokenizer_file='improved-tokenisation-methods/models/huggingface-tokeniser/tokeniser-unigram-prime-32000.json')
+tokenizer.pad_token = '[PAD]'
+tokenizer.mask_token = '[MASK]'
+tokenizer.cls_token = '[CLS]'
+tokenizer.sep_token = '[SEP]'
+tokenizer.unk_token = '[UNK]'
+```
